@@ -1,12 +1,12 @@
 use super::*;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub enum IdStringModifier {
     Numeric,
     Alpha,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct RecordSharing {
     pub id_string_modifier: IdStringModifier,
     pub share_count: u8,
@@ -14,7 +14,7 @@ pub struct RecordSharing {
     pub modifier_offset: u8,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct CompactSensorRecord {
     common: SensorRecordCommon,
     pub direction: Direction,

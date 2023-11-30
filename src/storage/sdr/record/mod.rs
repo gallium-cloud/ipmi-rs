@@ -17,6 +17,9 @@ use crate::{connection::LogicalUnit, Loggable};
 
 use super::{event_reading_type_code::EventReadingTypeCodes, RecordId, SensorType, Unit};
 
+use schemars::JsonSchema;
+use serde::Serialize;
+
 pub trait SensorRecord {
     fn common(&self) -> &SensorRecordCommon;
 
@@ -43,7 +46,7 @@ pub trait SensorRecord {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, JsonSchema)]
 pub struct Value {
     units: SensorUnits,
     value: f32,
@@ -65,7 +68,7 @@ impl Value {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub struct SensorKey {
     pub owner_id: SensorOwner,
     pub owner_channel: u8,
@@ -87,7 +90,7 @@ impl SensorKey {
             LogicalUnit::try_from((owner_channel_fru_lun >> 2) & 0x3).unwrap();
         let owner_lun = LogicalUnit::try_from(owner_channel_fru_lun & 0x3).unwrap();
 
-        let sensor_number = SensorNumber(NonMaxU8::new(record_data[2])?);
+        let sensor_number = SensorNumber::new(NonMaxU8::new(record_data[2])?);
 
         Some(Self {
             owner_id,
@@ -113,7 +116,7 @@ impl SensorKey {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub enum SensorOwner {
     I2C(u8),
     System(u8),
@@ -140,14 +143,13 @@ impl Into<u8> for SensorOwner {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub enum EntityRelativeTo {
     System,
     Device,
 }
 
-#[derive(Debug, Clone, Copy)]
-
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub enum EntityInstance {
     Physical {
         relative: EntityRelativeTo,
@@ -182,7 +184,7 @@ impl From<u8> for EntityInstance {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, JsonSchema)]
 pub struct SensorInitialization {
     pub settable: bool,
     pub scanning: bool,
@@ -224,7 +226,7 @@ impl From<u8> for SensorInitialization {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub enum HysteresisCapability {
     NoneOrUnspecified,
     Readable,
@@ -302,8 +304,7 @@ pub enum EventKind {
     GoingLow,
 }
 
-#[derive(Debug, Clone, Copy)]
-
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub struct Thresholds {
     pub lower_non_recoverable: bool,
     pub lower_critical: bool,
@@ -361,7 +362,7 @@ pub struct Threshold {
     pub event_deassert_going_low: bool,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub enum ThresholdAccessCapability {
     None,
     Readable {
@@ -399,7 +400,7 @@ impl ThresholdAccessCapability {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub struct SensorCapabilities {
     pub ignore: bool,
     pub auto_rearm: bool,
@@ -407,7 +408,9 @@ pub struct SensorCapabilities {
     pub event_message_control: u8,
     pub hysteresis: HysteresisCapability,
     pub threshold_access: ThresholdAccessCapability,
+    #[serde(skip_serializing, skip_deserializing)]
     pub assertion_threshold_events: ThresholdAssertEventMask,
+    #[serde(skip_serializing, skip_deserializing)]
     pub deassertion_threshold_events: ThresholdAssertEventMask,
 }
 
@@ -489,14 +492,14 @@ impl SensorCapabilities {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub enum DataFormat {
     Unsigned,
     OnesComplement,
     TwosComplement,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub enum RateUnit {
     Microsecond,
     Millisecond,
@@ -506,13 +509,13 @@ pub enum RateUnit {
     Day,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub enum ModifierUnit {
     BasUnitDivByModifier(Unit),
     BaseUnitMulByModifier(Unit),
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub struct SensorUnits {
     pub rate: Option<RateUnit>,
     pub modifier: Option<ModifierUnit>,
@@ -557,7 +560,7 @@ impl SensorUnits {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 
 pub enum Linearization {
     Linear,
@@ -598,7 +601,7 @@ impl From<u8> for Linearization {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, JsonSchema)]
 pub enum Direction {
     UnspecifiedNotApplicable,
     Input,
@@ -649,7 +652,7 @@ impl<'a> From<TypeLengthRaw<'a>> for SensorId {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, JsonSchema)]
 pub enum SensorId {
     Unicode(String),
     BCDPlus(Vec<u8>),
@@ -673,20 +676,20 @@ impl Default for SensorId {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub struct SensorNumber(pub NonMaxU8);
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
+pub struct SensorNumber(pub u8);
 
 impl SensorNumber {
     pub fn new(value: NonMaxU8) -> Self {
-        Self(value)
+        Self(value.into())
     }
 
     pub fn get(&self) -> u8 {
-        self.0.get()
+        self.0
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct RecordHeader {
     pub id: RecordId,
 
@@ -694,13 +697,13 @@ pub struct RecordHeader {
     pub sdr_version_minor: u8,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct Record {
     pub header: RecordHeader,
     pub contents: RecordContents,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub enum RecordContents {
     FullSensor(FullSensorRecord),
     CompactSensor(CompactSensorRecord),
@@ -803,7 +806,7 @@ impl Record {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct SensorRecordCommon {
     pub key: SensorKey,
     // TODO: make a type EntityId

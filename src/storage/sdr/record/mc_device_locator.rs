@@ -1,18 +1,20 @@
 use crate::storage::sdr::record::{SensorId, TypeLengthRaw};
+use schemars::JsonSchema;
+use serde::Serialize;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct McRecordKey {
     pub i2c_address: u8,
     pub channel: u8,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub enum GlobalInitialization {
     EnableEventMessageGeneration,
     DisableEventMessageGeneration,
     DoNotInitialize,
     Reserved,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct DeviceCapabilities {
     pub chassis_device: bool,
     pub bridge: bool,
@@ -23,7 +25,7 @@ pub struct DeviceCapabilities {
     pub sdr_repository_device: bool,
     pub sensor_device: bool,
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct McDeviceLocatorRecord {
     pub key: McRecordKey,
     pub acpi_system_power_state_notification_required: bool,

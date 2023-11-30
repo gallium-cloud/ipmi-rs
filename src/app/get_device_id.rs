@@ -2,6 +2,8 @@ use crate::{
     connection::{IpmiCommand, Message, NetFn, ParseResponseError},
     log_vec, Loggable,
 };
+use schemars::JsonSchema;
+use serde::Serialize;
 
 pub struct GetDeviceId;
 
@@ -25,7 +27,7 @@ impl IpmiCommand for GetDeviceId {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize, JsonSchema)]
 pub struct DeviceId {
     pub device_id: u8,
     pub device_revision: u8,

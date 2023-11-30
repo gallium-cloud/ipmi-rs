@@ -1,23 +1,25 @@
 use crate::connection::LogicalUnit;
 use crate::storage::sdr::record::{SensorId, TypeLengthRaw};
+use schemars::JsonSchema;
+use serde::Serialize;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct LogicalFruDevice {
     pub fru_device_id: u8,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct PhysicalFruDevice {
     pub i2c_address: u8,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub enum FruDevice {
     Logical(LogicalFruDevice),
     Physical(PhysicalFruDevice),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct FruRecordKey {
     pub device_access_address: u8,
     pub fru_device: FruDevice,
@@ -26,7 +28,7 @@ pub struct FruRecordKey {
     pub channel_number: u8,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct FruDeviceLocator {
     pub record_key: FruRecordKey,
     pub device_type: u8,

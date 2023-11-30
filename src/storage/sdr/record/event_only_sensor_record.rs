@@ -2,8 +2,10 @@ use crate::storage::sdr::event_reading_type_code::EventReadingTypeCodes;
 use crate::storage::sdr::record::compact_sensor_record::{IdStringModifier, RecordSharing};
 use crate::storage::sdr::record::{Direction, EntityInstance, SensorId, SensorKey, TypeLengthRaw};
 use crate::storage::sdr::SensorType;
+use schemars::JsonSchema;
+use serde::Serialize;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 
 pub struct EventOnlySensorRecord {
     pub key: SensorKey,
