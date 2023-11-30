@@ -1,3 +1,6 @@
+use serde::{ Serialize};
+use schemars::JsonSchema;
+
 macro_rules ! sensor_type {
     {
         pub enum SensorType {
@@ -6,7 +9,7 @@ macro_rules ! sensor_type {
             [$oem_reserved_range:pat],
         }
     } => {
-        #[derive(Debug, Clone, Copy, PartialEq)]
+        #[derive(Debug, Clone, Copy, PartialEq, Serialize,JsonSchema)]
         #[repr(u8)]
         pub enum SensorType {
             $($name = $value,)*

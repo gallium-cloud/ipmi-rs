@@ -1,3 +1,6 @@
+use serde::{ Serialize};
+use schemars::JsonSchema;
+
 pub trait IsPlural: PartialEq {
     fn is_singular(&self) -> bool;
     fn is_plural(&self) -> bool {
@@ -46,7 +49,7 @@ macro_rules ! unit {
     {
         $($name:ident = [$value:literal, $short:expr, $singular:literal, $plural:literal],)*
     } => {
-        #[derive(Debug, Clone, Copy, PartialEq)]
+        #[derive(Debug, Clone, Copy, PartialEq, Serialize,  JsonSchema)]
         #[repr(u8)]
         pub enum Unit {
             $($name = $value,)*

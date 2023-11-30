@@ -1,3 +1,6 @@
+use serde::{ Serialize};
+use schemars::JsonSchema;
+
 pub trait EventReadingTypeCode {
     const EVENT_READING_TYPE_CODE: u8;
     fn is_threshold(&self) -> bool;
@@ -65,7 +68,7 @@ macro_rules! event_reading_code {
             impl_event_reading_code!(generic: $disc_generic, $disc_generic_val);
         )*
 
-        #[derive(Debug, Clone, Copy, PartialEq)]
+        #[derive(Debug, Clone, Copy, PartialEq, Serialize,  JsonSchema)]
         pub enum EventReadingTypeCodes {
             Unspecified,
             Threshold,
