@@ -90,6 +90,18 @@ macro_rules! event_reading_code {
                 }
             }
         }
+        impl Into<u8> for EventReadingTypeCodes {
+            fn into(self) -> u8 {
+                match self {
+                    Self::Unspecified => 0x00,
+                    Self::Threshold => 0x01,
+                    Self::DiscreteGeneric(v) => v,
+                    Self::SensorSpecific => 0x6F,
+                    Self::Oem(v) => v,
+                    Self::Reserved(v) => v,
+                }
+            }
+        }
 
         pub enum EventReading {
             Threshold(Threshold),

@@ -102,6 +102,13 @@ macro_rules ! unit {
             {
                 format!("{:.2} {}", value, self.display_str(short, value.is_plural()))
             }
+
+            pub fn code(&self) -> u8 {
+                match self {
+                    $(Self::$name => $value,)*
+                    Self::Unknown(v) => *v,
+                }
+            }
         }
 
         impl From<u8> for Unit {
