@@ -14,7 +14,7 @@ pub struct RecordSharing {
     pub modifier_offset: u8,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct CompactSensorRecord {
     common: SensorRecordCommon,
     pub direction: Direction,

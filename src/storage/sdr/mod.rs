@@ -1,4 +1,7 @@
 mod get_dev_sdr_info;
+
+use schemars::JsonSchema;
+use serde::Serialize;
 pub use get_dev_sdr_info::*;
 
 mod get_sdr;
@@ -24,7 +27,7 @@ pub use sensor_type::SensorType;
 mod units;
 pub use units::Unit;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Serialize, JsonSchema)]
 pub struct RecordId(u16);
 
 impl RecordId {

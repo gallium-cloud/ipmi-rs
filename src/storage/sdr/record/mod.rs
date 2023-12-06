@@ -673,7 +673,7 @@ impl SensorNumber {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct RecordHeader {
     pub id: RecordId,
 
@@ -681,13 +681,13 @@ pub struct RecordHeader {
     pub sdr_version_minor: u8,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct Record {
     pub header: RecordHeader,
     pub contents: RecordContents,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub enum RecordContents {
     FullSensor(FullSensorRecord),
     CompactSensor(CompactSensorRecord),
