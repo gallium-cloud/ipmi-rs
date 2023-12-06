@@ -48,8 +48,8 @@ pub trait SensorRecord {
 
 #[derive(Debug, Serialize, JsonSchema)]
 pub struct Value {
-    units: SensorUnits,
-    value: f32,
+    pub units: SensorUnits,
+    pub value: f32,
 }
 
 impl Value {
