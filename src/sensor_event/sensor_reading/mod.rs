@@ -13,13 +13,13 @@ pub trait FromSensorReading {
 
 #[derive(Debug, Clone, Copy)]
 pub struct RawSensorReading {
-    reading: u8,
-    all_event_messages_disabled: bool,
-    scanning_disabled: bool,
-    reading_or_state_unavailable: bool,
-    offset_data_1: Option<u8>,
+    pub reading: u8,
+    pub all_event_messages_disabled: bool,
+    pub scanning_disabled: bool,
+    pub reading_or_state_unavailable: bool,
+    pub offset_data_1: Option<u8>,
     #[allow(unused)]
-    offset_data_2: Option<u8>,
+    pub offset_data_2: Option<u8>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize,  JsonSchema)]
