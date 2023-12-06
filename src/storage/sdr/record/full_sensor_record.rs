@@ -2,7 +2,7 @@ use std::num::NonZeroU8;
 
 use super::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 
 pub struct FullSensorRecord {
     common: SensorRecordCommon,
@@ -27,8 +27,8 @@ pub struct FullSensorRecord {
     lower_non_recoverable_threshold: u8,
     lower_critical_threshold: u8,
     lower_non_critical_threshold: u8,
-    pub positive_going_threshold_hysteresis_value: Option<NonZeroU8>,
-    pub negative_going_threshold_hysteresis_value: Option<NonZeroU8>,
+    pub positive_going_threshold_hysteresis_value: Option<u8>,
+    pub negative_going_threshold_hysteresis_value: Option<u8>,
     pub oem_data: u8,
 }
 
@@ -159,8 +159,8 @@ impl FullSensorRecord {
         let lower_non_recoverable_threshold = record_data[16];
         let lower_critical_threshold = record_data[17];
         let lower_non_critical_threshold = record_data[18];
-        let positive_going_threshold_hysteresis_value = NonZeroU8::new(record_data[19]);
-        let negative_going_threshold_hysteresis_value = NonZeroU8::new(record_data[20]);
+        let positive_going_threshold_hysteresis_value = NonZeroU8::new(record_data[19]).map(|v| v.get());
+        let negative_going_threshold_hysteresis_value = NonZeroU8::new(record_data[20]).map(|v| v.get());
 
         // Two reserved bytes in between
 
@@ -269,7 +269,7 @@ impl FullSensorRecord {
 
     pub fn positive_going_hysteresis(&self) -> Option<Value> {
         let value = self.positive_going_threshold_hysteresis_value?;
-        self.convert(value.get())
+        self.convert(value)
     }
 
     pub fn upper_non_recoverable_threshold(&self) -> Option<Value> {
@@ -298,6 +298,6 @@ impl FullSensorRecord {
 
     pub fn negative_going_threshold_hysteresis(&self) -> Option<Value> {
         let value = self.negative_going_threshold_hysteresis_value?;
-        self.convert(value.get())
+        self.convert(value)
     }
 }

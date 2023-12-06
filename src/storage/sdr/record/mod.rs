@@ -476,7 +476,7 @@ impl SensorCapabilities {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub enum DataFormat {
     Unsigned,
     OnesComplement,
@@ -544,7 +544,7 @@ impl SensorUnits {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 
 pub enum Linearization {
     Linear,
@@ -585,7 +585,7 @@ impl From<u8> for Linearization {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, JsonSchema)]
 pub enum Direction {
     UnspecifiedNotApplicable,
     Input,
