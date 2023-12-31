@@ -1,8 +1,8 @@
 mod get_dev_sdr_info;
 
+pub use get_dev_sdr_info::*;
 use schemars::JsonSchema;
 use serde::Serialize;
-pub use get_dev_sdr_info::*;
 
 mod get_sdr;
 pub use get_sdr::{GetDeviceSdr, RecordInfo as SdrRecordInfo, *};

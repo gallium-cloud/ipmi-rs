@@ -1,5 +1,5 @@
-use serde::{ Serialize};
 use schemars::JsonSchema;
+use serde::Serialize;
 
 macro_rules ! sensor_type {
     {

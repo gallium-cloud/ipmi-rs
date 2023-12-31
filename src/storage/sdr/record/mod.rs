@@ -10,8 +10,8 @@ use crate::{connection::LogicalUnit, Loggable};
 
 use super::{event_reading_type_code::EventReadingTypeCodes, RecordId, SensorType, Unit};
 
-use serde::{Serialize};
 use schemars::JsonSchema;
+use serde::Serialize;
 
 pub trait SensorRecord {
     fn common(&self) -> &SensorRecordCommon;
@@ -109,7 +109,7 @@ impl SensorKey {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq,  Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub enum SensorOwner {
     I2C(u8),
     System(u8),
@@ -177,7 +177,7 @@ impl From<u8> for EntityInstance {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Serialize,  JsonSchema)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, JsonSchema)]
 pub struct SensorInitialization {
     pub settable: bool,
     pub scanning: bool,
@@ -219,7 +219,7 @@ impl From<u8> for SensorInitialization {
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub enum HysteresisCapability {
     NoneOrUnspecified,
     Readable,
@@ -355,7 +355,7 @@ pub struct Threshold {
     pub event_deassert_going_low: bool,
 }
 
-#[derive(Debug, Clone, Copy, Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub enum ThresholdAccessCapability {
     None,
     Readable {
@@ -492,7 +492,7 @@ pub enum DataFormat {
     TwosComplement,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub enum RateUnit {
     Microsecond,
     Millisecond,
@@ -502,13 +502,13 @@ pub enum RateUnit {
     Day,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub enum ModifierUnit {
     BasUnitDivByModifier(Unit),
     BaseUnitMulByModifier(Unit),
 }
 
-#[derive(Debug, Clone, Copy, Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub struct SensorUnits {
     pub rate: Option<RateUnit>,
     pub modifier: Option<ModifierUnit>,
@@ -645,7 +645,7 @@ impl<'a> From<TypeLengthRaw<'a>> for SensorId {
     }
 }
 
-#[derive(Debug, Clone, Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub enum SensorId {
     Unicode(String),
     BCDPlus(Vec<u8>),
@@ -669,7 +669,7 @@ impl Default for SensorId {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, JsonSchema)]
 pub struct SensorNumber(pub u8);
 
 impl SensorNumber {
@@ -782,7 +782,7 @@ impl Record {
     }
 }
 
-#[derive(Debug, Clone, Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Serialize, JsonSchema)]
 pub struct SensorRecordCommon {
     pub key: SensorKey,
     // TODO: make a type EntityId

@@ -1,5 +1,5 @@
-use serde::{ Serialize};
 use schemars::JsonSchema;
+use serde::Serialize;
 
 pub trait EventReadingTypeCode {
     const EVENT_READING_TYPE_CODE: u8;

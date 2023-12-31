@@ -159,8 +159,10 @@ impl FullSensorRecord {
         let lower_non_recoverable_threshold = record_data[16];
         let lower_critical_threshold = record_data[17];
         let lower_non_critical_threshold = record_data[18];
-        let positive_going_threshold_hysteresis_value = NonZeroU8::new(record_data[19]).map(|v| v.get());
-        let negative_going_threshold_hysteresis_value = NonZeroU8::new(record_data[20]).map(|v| v.get());
+        let positive_going_threshold_hysteresis_value =
+            NonZeroU8::new(record_data[19]).map(|v| v.get());
+        let negative_going_threshold_hysteresis_value =
+            NonZeroU8::new(record_data[20]).map(|v| v.get());
 
         // Two reserved bytes in between
 

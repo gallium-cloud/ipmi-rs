@@ -1,5 +1,5 @@
-use serde::{ Serialize};
 use schemars::JsonSchema;
+use serde::Serialize;
 
 pub trait IsPlural: PartialEq {
     fn is_singular(&self) -> bool;

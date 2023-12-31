@@ -2,8 +2,8 @@ mod get;
 pub use get::GetSensorReading;
 
 use crate::storage::sdr::event_reading_type_code::Threshold;
-use serde::{ Serialize};
 use schemars::JsonSchema;
+use serde::Serialize;
 
 pub trait FromSensorReading {
     type Sensor;
@@ -22,7 +22,7 @@ pub struct RawSensorReading {
     pub offset_data_2: Option<u8>,
 }
 
-#[derive(Debug, Clone, Copy, Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub struct ThresholdStatus {
     pub at_or_above_non_recoverable: bool,
     pub at_or_above_upper_critical: bool,
@@ -32,7 +32,7 @@ pub struct ThresholdStatus {
     pub at_or_below_lower_non_critical: bool,
 }
 
-#[derive(Debug, Clone, Copy, Serialize,  JsonSchema)]
+#[derive(Debug, Clone, Copy, Serialize, JsonSchema)]
 pub struct ThresholdReading {
     pub all_event_messages_disabled: bool,
     pub scanning_disabled: bool,

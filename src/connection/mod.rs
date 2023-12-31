@@ -1,7 +1,7 @@
 mod completion_code;
 pub use completion_code::CompletionCode;
-use serde::{ Serialize};
 use schemars::JsonSchema;
+use serde::Serialize;
 
 mod impls;
 
@@ -19,7 +19,7 @@ pub use request::Request;
 mod response;
 pub use response::Response;
 
-#[derive(Clone, Copy, Debug, PartialEq, Serialize,  JsonSchema)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, JsonSchema)]
 pub enum LogicalUnit {
     Zero,
     One,
