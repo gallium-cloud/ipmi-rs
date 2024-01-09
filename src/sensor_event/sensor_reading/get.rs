@@ -1,4 +1,3 @@
-use crate::storage::sdr::record::SensorKey;
 use crate::{
     connection::{CompletionCode, IpmiCommand, Message, ParseResponseError},
     storage::sdr::record::SensorNumber,
@@ -38,26 +37,17 @@ impl RawSensorReading {
 
 pub struct GetSensorReading {
     sensor_number: SensorNumber,
-    sensor_key: Option<SensorKey>,
 }
 
 impl GetSensorReading {
     pub fn new(value: SensorNumber) -> Self {
         Self {
             sensor_number: value,
-            sensor_key: None,
         }
     }
 
     pub fn for_sensor(sensor: SensorNumber) -> Self {
         Self::new(sensor)
-    }
-
-    pub fn for_sensor_key(value: SensorKey) -> Self {
-        Self {
-            sensor_number: value.sensor_number.clone(),
-            sensor_key: Some(value),
-        }
     }
 }
 

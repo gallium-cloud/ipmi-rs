@@ -88,7 +88,7 @@ fn main() -> std::io::Result<()> {
     for sensor in &sensors {
         if let RecordContents::FullSensor(full) = &sensor.contents {
             let value = ipmi
-                .send_recv(GetSensorReading::for_sensor_key(full.common().key.clone()))
+                .send_recv(GetSensorReading::for_sensor(full.sensor_number()))
                 .unwrap();
 
             let reading: ThresholdReading = (&value).into();
