@@ -9,6 +9,7 @@ use crate::{
     connection::{IpmiConnection, Message, Request, Response},
     NetFn,
 };
+use crate::connection::IpmbBridgeTarget;
 
 #[repr(C)]
 #[derive(Debug)]
@@ -177,13 +178,13 @@ impl IpmiConnection for File {
     type RecvError = io::Error;
     type Error = io::Error;
 
-    fn send(&mut self, request: &mut Request) -> io::Result<()> {
+    fn send(&mut self, request: &mut Request, addr: Option<IpmbBridgeTarget>) -> io::Result<()> {
         let mut bmc_addr = IpmiSysIfaceAddr::bmc(request.lun().value());
         let mut ipmb_addr = IpmiIpmbAddr::new(0, 0, request.lun().value());
-        if let Some((c, a, l)) = request.address {
-            ipmb_addr.channel = c as i16;
-            ipmb_addr.target_addr = a;
-            ipmb_addr.lun = l;
+        if let Some(target_addr) = addr {
+            ipmb_addr.channel = target_addr.channel;
+            ipmb_addr.target_addr = target_addr.target_addr;
+            ipmb_addr.lun = target_addr.lun;
         }
 
         let netfn = request.netfn_raw();
@@ -194,7 +195,7 @@ impl IpmiConnection for File {
         let data_len = data.len() as u16;
         let ptr = data.as_mut_ptr();
 
-        let mut request = if request.address.is_some() {
+        let mut request = if addr.is_some() {
             IpmiRequest {
                 addr: std::ptr::addr_of_mut!(ipmb_addr) as *mut u8,
                 addr_len: core::mem::size_of::<IpmiIpmbAddr>() as u32,
@@ -317,8 +318,8 @@ impl IpmiConnection for File {
         }
     }
 
-    fn send_recv(&mut self, request: &mut Request) -> io::Result<Response> {
-        self.send(request)?;
+    fn send_recv(&mut self, request: &mut Request, addr: Option<IpmbBridgeTarget>) -> io::Result<Response> {
+        self.send(request, addr)?;
 
         // TODO: determine if sequence number is correct
 

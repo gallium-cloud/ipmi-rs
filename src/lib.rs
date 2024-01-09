@@ -13,6 +13,7 @@ pub use fmt::{LogOutput, Loggable, Logger};
 
 use connection::{IpmiCommand, LogicalUnit, NetFn, ParseResponseError, Request};
 use storage::sdr::{self, record::Record as SdrRecord};
+use crate::connection::IpmbBridgeTarget;
 
 pub struct Ipmi<CON> {
     inner: CON,
@@ -82,6 +83,7 @@ where
     pub fn send_recv<CMD>(
         &mut self,
         request: CMD,
+        addr: Option<IpmbBridgeTarget>,
     ) -> Result<CMD::Output, IpmiCommandError<CON::Error, CMD::Error>>
     where
         CMD: IpmiCommand,
@@ -90,7 +92,7 @@ where
         let (message_netfn, message_cmd) = (message.netfn(), message.cmd());
         let mut request = Request::new(message, LogicalUnit::Zero);
 
-        let response = self.inner.send_recv(&mut request)?;
+        let response = self.inner.send_recv(&mut request, addr)?;
 
         if response.netfn() != message_netfn || response.cmd() != message_cmd {
             return Err(IpmiError::UnexpectedResponse {
@@ -128,7 +130,7 @@ where
         let next_id = self.next_id?;
         let next_record = self
             .ipmi
-            .send_recv(sdr::GetDeviceSdr::new(None, next_id))
+            .send_recv(sdr::GetDeviceSdr::new(None, next_id), None)
             .map_err(|e| {
                 log::error!("Error occured while iterating SDR records: {e:?}");
             })

@@ -5,7 +5,6 @@ use super::Message;
 pub struct Request {
     lun: LogicalUnit,
     message: Message,
-    pub address: Option<(u8, u8, u8)>,
 }
 
 impl Request {
@@ -13,7 +12,6 @@ impl Request {
         Self {
             lun,
             message: request,
-            address: None,
         }
     }
 

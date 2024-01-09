@@ -26,12 +26,12 @@ fn main() -> std::io::Result<()> {
     let debug_log_output = &LogOutput::LogTarget(log::Level::Debug, "get_info".into());
 
     log::info!("Getting SEL info");
-    let info = ipmi.send_recv(GetSelInfo).unwrap();
+    let info = ipmi.send_recv(GetSelInfo, None).unwrap();
     ipmi_rs::Logger::log(log_output, &info);
 
     if info.supported_cmds.contains(&SelCommand::GetAllocInfo) {
         log::info!("Getting SEL Alloc info");
-        let alloc_info = ipmi.send_recv(GetSelAllocInfo).unwrap();
+        let alloc_info = ipmi.send_recv(GetSelAllocInfo, None).unwrap();
         ipmi_rs::Logger::log(log_output, &alloc_info);
     } else {
         log::info!("Getting SEL Alloc info is not supported");
@@ -40,28 +40,28 @@ fn main() -> std::io::Result<()> {
     if info.entries > 0 {
         log::info!("Getting first record");
         let first_record = ipmi
-            .send_recv(GetSelEntry::new(None, SelRecordId::LAST))
+            .send_recv(GetSelEntry::new(None, SelRecordId::LAST), None)
             .unwrap();
 
         ipmi_rs::Logger::log(log_output, &first_record);
     }
 
-    let device_id = ipmi.send_recv(GetDeviceId).unwrap();
+    let device_id = ipmi.send_recv(GetDeviceId, None).unwrap();
     ipmi_rs::Logger::log(log_output, &device_id);
 
     log::info!("Getting Device SDR Info");
-    if let Ok(sdr_info) = ipmi.send_recv(GetDeviceSdrInfo::new(SdrCount)) {
+    if let Ok(sdr_info) = ipmi.send_recv(GetDeviceSdrInfo::new(SdrCount), None) {
         ipmi_rs::Logger::log(log_output, &sdr_info);
     } else {
         log::warn!("Could not get Device SDR info");
     }
 
     log::info!("Getting SDR repository info");
-    let sdr_info = ipmi.send_recv(GetSdrRepositoryInfo).unwrap();
+    let sdr_info = ipmi.send_recv(GetSdrRepositoryInfo, None).unwrap();
     ipmi_rs::Logger::log(log_output, &sdr_info);
 
     if sdr_info.supported_ops.contains(&SdrOperation::GetAllocInfo) {
-        let sdr_alloc_info = ipmi.send_recv(GetSdrAllocInfo).unwrap();
+        let sdr_alloc_info = ipmi.send_recv(GetSdrAllocInfo, None).unwrap();
         ipmi_rs::Logger::log(log_output, &sdr_alloc_info);
     };
 
@@ -87,8 +87,9 @@ fn main() -> std::io::Result<()> {
 
     for sensor in &sensors {
         if let RecordContents::FullSensor(full) = &sensor.contents {
+            let bridge_target = full.common().key.into();
             let value = ipmi
-                .send_recv(GetSensorReading::for_sensor(full.sensor_number()))
+                .send_recv(GetSensorReading::for_sensor(full.sensor_number()), Some(bridge_target))
                 .unwrap();
 
             let reading: ThresholdReading = (&value).into();

@@ -51,14 +51,20 @@ impl LogicalUnit {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct IpmbBridgeTarget {
+    pub channel: i16,
+    pub target_addr: u8,
+    pub lun: u8,
+}
 pub trait IpmiConnection {
     type SendError: core::fmt::Debug;
     type RecvError: core::fmt::Debug;
     type Error: core::fmt::Debug + From<Self::SendError> + From<Self::RecvError>;
 
-    fn send(&mut self, request: &mut Request) -> Result<(), Self::SendError>;
+    fn send(&mut self, request: &mut Request, addr: Option<IpmbBridgeTarget>) -> Result<(), Self::SendError>;
     fn recv(&mut self) -> Result<Response, Self::RecvError>;
-    fn send_recv(&mut self, request: &mut Request) -> Result<Response, Self::Error>;
+    fn send_recv(&mut self, request: &mut Request, addr: Option<IpmbBridgeTarget>) -> Result<Response, Self::Error>;
 }
 
 #[derive(Clone, Debug, PartialEq)]

@@ -20,6 +20,7 @@ use crate::{
 mod rmcp;
 mod wire;
 use rmcp::*;
+use crate::connection::IpmbBridgeTarget;
 
 mod encapsulation;
 
@@ -183,7 +184,7 @@ impl Rmcp<Inactive> {
         let authentication_caps = match ipmi.send_recv(GetChannelAuthenticationCapabilities::new(
             Channel::Current,
             privilege_level,
-        )) {
+        ), None) {
             Ok(v) => v,
             Err(e) => return Err(ActivationError::GetChannelAuthenticationCapabilities(e)),
         };
@@ -192,7 +193,7 @@ impl Rmcp<Inactive> {
 
         log::debug!("Requesting challenge");
 
-        let challenge = match ipmi.send_recv(challenge_command) {
+        let challenge = match ipmi.send_recv(challenge_command, None) {
             Ok(v) => v,
             Err(e) => return Err(ActivationError::GetSessionChallenge(e)),
         };
@@ -213,7 +214,7 @@ impl Rmcp<Inactive> {
 
         log::debug!("Activating session");
 
-        let activation_info = match ipmi.send_recv(activate_session.clone()) {
+        let activation_info = match ipmi.send_recv(activate_session.clone(), None) {
             Ok(v) => v,
             Err(e) => return Err(ActivationError::ActivateSession(e)),
         };
@@ -239,7 +240,7 @@ impl IpmiConnection for Rmcp<Active> {
 
     type Error = Error;
 
-    fn send(&mut self, request: &mut crate::connection::Request) -> Result<(), Self::SendError> {
+    fn send(&mut self, request: &mut crate::connection::Request, addr: Option<IpmbBridgeTarget>) -> Result<(), Self::SendError> {
         wire::send(
             &mut self.inner,
             self.state.auth_type,
@@ -262,8 +263,9 @@ impl IpmiConnection for Rmcp<Active> {
     fn send_recv(
         &mut self,
         request: &mut crate::connection::Request,
+        addr: Option<IpmbBridgeTarget>,
     ) -> Result<Response, Self::Error> {
-        self.send(request)?;
+        self.send(request, addr)?;
         self.recv()
     }
 }

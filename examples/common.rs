@@ -11,6 +11,7 @@ use ipmi_rs::{
     storage::sdr,
     Ipmi, IpmiCommandError, SdrIter,
 };
+use ipmi_rs::connection::IpmbBridgeTarget;
 
 #[allow(unused)]
 fn main() {}
@@ -40,13 +41,14 @@ impl IpmiConnectionEnum {
     pub fn send_recv<CMD>(
         &mut self,
         request: CMD,
+        addr: Option<IpmbBridgeTarget>,
     ) -> Result<CMD::Output, IpmiCommandError<std::io::Error, CMD::Error>>
     where
         CMD: IpmiCommand,
     {
         match self {
-            IpmiConnectionEnum::Rmcp(rmcp) => rmcp.send_recv(request),
-            IpmiConnectionEnum::File(file) => file.send_recv(request),
+            IpmiConnectionEnum::Rmcp(rmcp) => rmcp.send_recv(request, addr),
+            IpmiConnectionEnum::File(file) => file.send_recv(request, addr),
         }
     }
 

@@ -20,6 +20,7 @@ md5 = "0.7"
 
 # For unix-file IPMI
 nix = { version = "0.26", default-features = false, features = [ "ioctl" ], optional = true }
+proc-macro2 = "1.0.76"
 
 [features]
 default = [ "time", "unix-file", "log-to-file" ]

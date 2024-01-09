@@ -7,6 +7,7 @@ pub use compact_sensor_record::CompactSensorRecord;
 use nonmax::NonMaxU8;
 
 use crate::{connection::LogicalUnit, Loggable};
+use crate::connection::IpmbBridgeTarget;
 
 use super::{event_reading_type_code::EventReadingTypeCodes, RecordId, SensorType, Unit};
 
@@ -65,6 +66,16 @@ pub struct SensorKey {
     pub fru_inv_device_owner_lun: LogicalUnit,
     pub owner_lun: LogicalUnit,
     pub sensor_number: SensorNumber,
+}
+
+impl Into<IpmbBridgeTarget> for SensorKey {
+    fn into(self) -> IpmbBridgeTarget {
+        IpmbBridgeTarget {
+            target_addr: self.owner_id.into(),
+            channel: self.owner_channel as i16,
+            lun: self.owner_lun.value(),
+        }
+    }
 }
 
 impl SensorKey {

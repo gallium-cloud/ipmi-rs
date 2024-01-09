@@ -58,8 +58,8 @@ fn main() -> std::io::Result<()> {
     let ipmi = command.common.get_connection()?;
 
     let result = match ipmi {
-        common::IpmiConnectionEnum::Rmcp(mut r) => r.inner_mut().send_recv(&mut request)?,
-        common::IpmiConnectionEnum::File(mut f) => f.inner_mut().send_recv(&mut request)?,
+        common::IpmiConnectionEnum::Rmcp(mut r) => r.inner_mut().send_recv(&mut request, None)?,
+        common::IpmiConnectionEnum::File(mut f) => f.inner_mut().send_recv(&mut request, None)?,
     };
 
     println!("Response:");
