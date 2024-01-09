@@ -87,10 +87,18 @@ fn main() -> std::io::Result<()> {
 
     for sensor in &sensors {
         if let RecordContents::FullSensor(full) = &sensor.contents {
-            let bridge_target = full.common().key.into();
-            let value = ipmi
-                .send_recv(GetSensorReading::for_sensor(full.sensor_number()), Some(bridge_target))
-                .unwrap();
+
+            let bridge_target = match full.common().key.owner_id.into() {
+                0x20 => None,
+                _ => Some(full.common().key.into()),
+            };
+            let value = match ipmi
+                .send_recv(GetSensorReading::for_sensor(full.sensor_number()), bridge_target) {
+                Ok(v) => v,
+                Err(_) => {
+                    continue;
+                }
+            };
 
             let reading: ThresholdReading = (&value).into();
 
