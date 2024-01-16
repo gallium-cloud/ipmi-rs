@@ -48,6 +48,7 @@ impl From<GetDeviceSdr> for Message {
         data[2..4].copy_from_slice(&value.record_id.value().to_le_bytes());
         data[4] = value.offset;
         data[5] = value.bytes_to_read.map(|v| v.get()).unwrap_or(0xFF);
+        println!("Get SDR request: {:02X?}", data);
 
         Message::new_request(NetFn::Storage, 0x23, data)
     }
@@ -79,6 +80,7 @@ impl RecordInfo {
         if data.len() < 9 {
             return None;
         }
+        println!("Get SDR response: {:02X?}", data);
 
         let next_entry = RecordId::new_raw(u16::from_le_bytes([data[0], data[1]]));
         let data = &data[2..];
