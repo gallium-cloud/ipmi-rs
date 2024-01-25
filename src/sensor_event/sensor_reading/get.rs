@@ -35,6 +35,7 @@ impl RawSensorReading {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct GetSensorReading {
     sensor_number: SensorNumber,
     address: Address,

@@ -5,6 +5,7 @@ use crate::{
 use schemars::JsonSchema;
 use serde::Serialize;
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct GetDeviceId;
 
 impl From<GetDeviceId> for Message {
